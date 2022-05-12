@@ -12,7 +12,7 @@ runLength = concat . map (compress) . group
 
 compress :: String -> String
 compress x
-    | leng > 1 =(show . length $ x) ++ [head x]
+    | leng > 1 =show leng ++ [head x]
     | otherwise = [head x]
     where leng = length x
 
@@ -28,7 +28,7 @@ main = do
          let compressedText = runLength text
          let textLength = length text
          let compressedTextLength = length compressedText
-         let compressionFactor = round (fromIntegral compressedTextLength / fromIntegral textLength) * 100
+         let compressionFactor = round (fromIntegral compressedTextLength / fromIntegral textLength * 100)
 
          putStrLn("length of " ++ command1 ++ ": " ++ show textLength ++ " characters.")
          putStrLn("length of compressed file " ++ command2 ++ ": " ++ show compressedTextLength ++ " characters.")

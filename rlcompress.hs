@@ -2,7 +2,6 @@
 -- Ben Derksen (1014934)
 -- Marjon Buijing (1015470)
 module Main where
-import System.IO  
 import System.Directory
 import System.Environment
 import Data.List

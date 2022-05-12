@@ -5,15 +5,16 @@ module Main where
 import System.Directory
 import System.Environment
 import Data.List
+import Data.Char
 
 runLength :: String -> String
-runLength = concat . map (compress) . Data.List.group 
+runLength = concat . map (compress) . group
 
 compress :: String -> String
-compress x 
+compress x
     | leng > 1 =(show . length $ x) ++ [head x]
     | otherwise = [head x]
-    where leng = length $ x
+    where leng = length x
 
 main :: IO ()
 main = do
@@ -22,13 +23,15 @@ main = do
         then putStrLn "please give file to read and file to write to"
         else do
          let command1 = head args
-             command2 = args!! 1
+             command2 = args !! 1
          text <- readFile command1;
          let compressedText = runLength text
          let textLength = length text
-         putStrLn("length of " ++ command1 ++ ": " ++ (show textLength) ++ " characters.")
          let compressedTextLength = length compressedText
-         putStrLn("length of compressed file " ++ command2 ++ ": " ++ (show compressedTextLength) ++ " characters.")
-         let compressionFactor = round $ ((fromIntegral compressedTextLength) / (fromIntegral textLength)) * 100
-         putStrLn("factor: " ++ (show compressedTextLength) ++ " / " ++ (show textLength) ++ " * 100% = " ++ (show compressionFactor) ++ "%")
+         let compressionFactor = round (fromIntegral compressedTextLength / fromIntegral textLength) * 100
+
+         putStrLn("length of " ++ command1 ++ ": " ++ show textLength ++ " characters.")
+         putStrLn("length of compressed file " ++ command2 ++ ": " ++ show compressedTextLength ++ " characters.")
+         putStrLn("factor: " ++ show compressedTextLength ++ " / " ++ show textLength ++ " * 100% = " ++ show compressionFactor ++ "%")
          writeFile command2 compressedText
+

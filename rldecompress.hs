@@ -1,3 +1,6 @@
+-- Gemaakt door:
+-- Ben Derksen (1014934)
+-- Marjon Buijing (1015470)
 import Data.Char
 import System.Environment
 import Data.List
@@ -6,9 +9,8 @@ import Data.List
 decompress :: String -> [String]
 decompress [] = []
 decompress (x:rest)
-    | isDigit x = replicate (digitToInt x) (head rest) : end
+    | isDigit x = replicate (digitToInt x) (head rest) : decompress (tail rest)
     | otherwise = [x] : decompress rest
-        where end = decompress (tail rest)
 
 main :: IO ()
 main = do

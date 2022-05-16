@@ -3,12 +3,12 @@ import System.Environment
 import Data.List
 
 
-splitRunLength :: String -> [String]
-splitRunLength [] = []
-splitRunLength (x:rest)
+decompress :: String -> [String]
+decompress [] = []
+decompress (x:rest)
     | isDigit x = replicate (digitToInt x) (head rest) : end
-    | otherwise = [x] : splitRunLength rest
-        where end = splitRunLength (tail rest)
+    | otherwise = [x] : decompress rest
+        where end = decompress (tail rest)
 
 main :: IO ()
 main = do
@@ -18,5 +18,5 @@ main = do
              outputFile = args!!1
 -- Open input file and compress inputText into outputText
          inputText <- readFile inputFile;
-         let outputText = splitRunLength inputText
+         let outputText = decompress inputText
          writeFile outputFile $ concat outputText

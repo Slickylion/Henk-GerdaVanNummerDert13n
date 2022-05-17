@@ -5,12 +5,24 @@ import Data.Char
 import System.Environment
 import Data.List
 
-
 decompress :: String -> [String]
 decompress [] = []
 decompress (x:rest)
-    | isDigit x = replicate (digitToInt x) (head rest) : decompress (tail rest)
+    | isDigit x = replicate (read (x:takeDigits rest)::Int) (head left) : decompress (tail left)
     | otherwise = [x] : decompress rest
+    where left = removeDigits rest
+
+takeDigits :: String -> String
+takeDigits [] = []
+takeDigits (x:rest)
+    | isDigit x = x : takeDigits rest
+    | otherwise = ""
+    
+removeDigits :: String -> String
+removeDigits [] = []
+removeDigits (x:rest)
+    | isDigit x = removeDigits rest
+    | otherwise = x:rest
 
 main :: IO ()
 main = do

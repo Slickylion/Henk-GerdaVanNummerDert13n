@@ -10,20 +10,16 @@ module Main where
 
 main = do
     let x = Node 0 Empty Empty;
-    putStrLn $ show x
+    print x
 
 data BinTree a = Empty
     | Node a (BinTree a)(BinTree a)
-     deriving (Show, Read)
+     deriving (Eq, Ord, Show, Read)
 
 
-push :: a -> BinTree a -> BinTree a
-push x Empty = Node x Empty Empty
-push x (Node y a b) = Node y (Node x Empty Empty) b
-
-
-
-
+push :: (Ord a) => BinTree a -> a -> BinTree a
+push Empty x = Node x Empty Empty
+push (Node y a b) x = Node y (Node x Empty Empty) b
 
 
 

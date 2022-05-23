@@ -8,9 +8,11 @@
 module Main where
 
 
+main :: IO ()
 main = do
     let x = Node 0 Empty Empty;
-    print x
+    putStr "binary Tree"
+    
 
 data BinTree a = Empty
     | Node a (BinTree a)(BinTree a)
@@ -22,6 +24,9 @@ push Empty x = Node x Empty Empty
 push (Node y a b) x = Node y (Node x Empty Empty) b
 
 
+-- testing
+printTree (Node y a b) = show y
+printTree Empty = "This is empty"
 
 
 

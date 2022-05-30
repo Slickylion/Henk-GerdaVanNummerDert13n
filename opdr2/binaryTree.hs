@@ -6,6 +6,7 @@
 -- in order traversal:
 -- post order traversal:
 module Main where
+import Control.Arrow (ArrowChoice(right))
 
 main :: IO ()
 main = do
@@ -24,8 +25,17 @@ push (Node a y b) x
     | x < y = Node (push a x) y b
     | otherwise = Node a y (push b x)
 
-    
-maptree :: (a-> b) -> BinTree a -> BinTree b 
+filterTree :: (a -> Bool) -> BinTree a -> [a]
+filterTree f Empty = []
+filterTree f (Node leftSubTree a rightSubTree)
+    | f a = a : rest
+    | otherwise = rest
+    where rest = filterTree f leftSubTree ++ filterTree f rightSubTree
+
+pushList :: Ord a => [a] -> BinTree a -> BinTree a
+pushList rest b = foldl push b rest
+
+maptree :: (a-> b) -> BinTree a -> BinTree b
 maptree _ Empty = Empty
 maptree f (Node leftSubTree a rightSubTree) = Node (maptree f leftSubTree) (f a) (maptree f rightSubTree)
 

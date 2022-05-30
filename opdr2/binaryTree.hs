@@ -18,10 +18,12 @@ data BinTree a = Empty
 
 -- als waarde hoger dan boomwaarde, ga naar rechts anders links
 
+push :: Ord a => BinTree a -> a -> BinTree a
 push Empty x = Node Empty x Empty
 push (Node a y b) x
     | x < y = Node (push a x) y b
     | otherwise = Node a y (push b x)
+
     
 mapTree :: (t -> a) -> BinTree t -> BinTree a
 mapTree _ Empty =  Empty

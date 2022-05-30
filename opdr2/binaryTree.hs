@@ -6,7 +6,6 @@
 -- in order traversal:
 -- post order traversal:
 module Main where
-import Control.Arrow (ArrowChoice(right))
 
 main :: IO ()
 main = do

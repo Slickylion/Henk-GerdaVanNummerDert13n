@@ -23,10 +23,24 @@ push (Node a y b) x
     | x < y = Node (push a x) y b
     | otherwise = Node a y (push b x)
     
-mapTree :: (t -> a) -> BinTree t -> BinTree a
-mapTree _ Empty =  Empty
-mapTree f (Node leftTree a rightTree) = Node (mapTree f leftTree) (f a) (mapTree f rightTree)
+maptree :: (a-> b) -> BinTree a -> BinTree b 
+maptree _ Empty = Empty
+maptree f (Node leftSubTree a rightSubTree) = Node (maptree f leftSubTree) (f a) (maptree f rightSubTree)
 
+preorder :: BinTree a -> [a]
+preorder (Node leftSubTree a rightSubTree) =
+  [a] ++ preorder leftSubTree ++ preorder rightSubTree
+preorder _ = []
+
+postorder :: BinTree a -> [a]
+postorder (Node leftSubTree a rightSubTree) =
+  postorder leftSubTree ++ postorder rightSubTree ++ [a]
+postorder _ = []
+
+inorder :: BinTree a -> [a]
+inorder (Node leftSubTree a rightSubTree) =
+  inorder leftSubTree ++ [a] ++ inorder rightSubTree
+inorder _ = []
 -- testing
 printTree (Node y a b) = show y
 printTree Empty = "This is empty"

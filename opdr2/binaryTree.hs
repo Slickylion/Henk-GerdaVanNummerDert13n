@@ -6,11 +6,29 @@
 -- in order traversal:
 -- post order traversal:
 module Main where
+import System.Environment
+import Data.Char
 
 main :: IO ()
 main = do
-    let x = Node Empty 0 Empty
-    putStr "binary Tree"
+    args <- getArgs
+    if length args < 2
+        then putStrLn "please give file to read and file to write to"
+        else do
+         let command1 = head args
+             command2 = args !! 1
+         text <- readFile command1;
+         let tree = maptree ord $ pushList text Empty
+         writeFile command2 $ show tree
+         treeText <- readFile command2
+         let tree2 = maptree chr (read treeText::BinTree Int)
+         let str = inorder tree2
+         let numbers = filterTree isDigit tree2
+         putStrLn str
+         putStrLn numbers
+
+
+
 
 data BinTree a = Empty
     | Node (BinTree a) a (BinTree a)

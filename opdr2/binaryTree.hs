@@ -55,6 +55,3 @@ inorder _ = []
 -- testing
 printTree (Node y a b) = show y
 printTree Empty = "This is empty"
-
-
-

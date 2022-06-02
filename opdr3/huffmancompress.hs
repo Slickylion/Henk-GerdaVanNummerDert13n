@@ -1,5 +1,8 @@
 module Main where
 
+import Data.HashMap.Lazy as L
+import Prelude as P
+
 main :: IO ()
 main = do
     putStrLn "HEUFMAN"

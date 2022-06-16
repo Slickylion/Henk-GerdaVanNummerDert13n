@@ -1,18 +1,26 @@
 module Main where
 
-import Data.HashMap.Lazy as L
+import Data.Map as M
 import Prelude as P
+import Data.Maybe
+
+type Mappy = M.Map Char Int
 
 main :: IO ()
 main = do
+    let maap = M.insert 'a' 9
+    let x = M.lookup 'a'
     putStrLn "HEUFMAN"
 
 
-countLetters :: String -> [String]
-countLetters [] = []
-countLetters (x:rest) = ["hou je mond compiler"]
+countLetters :: String -> Mappy-> Mappy
+countLetters [] m = m
+countLetters (x:rest) m = countLetters (removeLetters rest x) (M.insert x (countLetter x rest+1) m)
 
-countLetter :: Char -> String -> Int 
+removeLetters :: Eq a => [a] -> a -> [a]
+removeLetters str char = P.filter (/= char) str
+
+countLetter :: Char -> String -> Int
 countLetter letter [] = 0
 countLetter letter (x:rest)
     | letter == x = 1 + recursive

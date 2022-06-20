@@ -6,6 +6,7 @@ import Data.Maybe
 import System.Environment
 import Data.Function
 import Data.List
+import Data.Sequence (Seq(Empty))
 
 type Mappy = M.Map Char Int
 
@@ -20,8 +21,9 @@ main = do
         [arg1, arg2, arg3] -> do
             text <- readFile arg1;
             let text2 = sortBy (compare `on` snd) (toList (countLetters text empty))
-            print $ listToLeafList text2
-            print text2
+            let tree = leafListToGeneralAppleTree $ listToLeafList text2
+            print $ getValue tree
+            print tree
             putStrLn "YES WE GOT EM"
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to compress, file to save compressed, and file to save tree"
 
@@ -32,12 +34,21 @@ main = do
 listToLeafList :: [(Char, Int)] -> [HuufManTree]
 listToLeafList [] = []
 listToLeafList ((x,y):rest) = Leaf x y : listToLeafList rest
---addToTree :: [[a]] -> HuufManTree
--- addToTree [] t = t
--- addToTree (x:rest) t = putStrLn x !! 0\
 
--- leafListToGeneralAppleTree :: [HuufManTree] -> HuufManTree
--- leafListToGeneralAppleTree 
+getValue :: HuufManTree -> Int
+getValue (Leaf _ i) = i
+getValue (Fork _ i _) = i
+
+addToTree :: HuufManTree -> HuufManTree -> HuufManTree
+addToTree l t = Fork t (getValue l + getValue t) l
+
+leafListToGeneralAppleTree :: [HuufManTree] -> HuufManTree
+leafListToGeneralAppleTree c = leafListToGeneralAppleTreeRecursive (tail c) (head c)
+
+leafListToGeneralAppleTreeRecursive  :: [HuufManTree] -> HuufManTree-> HuufManTree
+leafListToGeneralAppleTreeRecursive rest t = P.foldl addToTree t rest
+
+
 
 countLetters :: String -> Mappy-> Mappy
 countLetters [] m = m

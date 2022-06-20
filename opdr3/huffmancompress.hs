@@ -2,13 +2,13 @@ module Main where
 
 import Data.Map as M
 import Prelude as P
-import Data.Maybe
 import System.Environment
 import Data.Function
 import Data.List
 import Data.Sequence (Seq(Empty))
 
 type Mappy = M.Map Char Int
+type Snappy = M.Map Char [Char]
 
 data HuufManTree = Leaf Char Int
     | Fork HuufManTree Int HuufManTree
@@ -19,36 +19,39 @@ main = do
     args <- getArgs
     case args of
         [arg1, arg2, arg3] -> do
-            text <- readFile arg1;
+            text <- readFile arg1
             let text2 = sortBy (compare `on` snd) (toList (countLetters text empty))
             let tree = leafListToGeneralAppleTree $ listToLeafList text2
-            print $ getValue tree
+            writeFile arg3 $ show tree
+            print $ buildCodeMap tree "" empty
             print tree
+
             putStrLn "YES WE GOT EM"
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to compress, file to save compressed, and file to save tree"
 
     -- De file waar de tree naartoe wordt geschreven
 
 -- [('c',12),('b',10),('a',8),('d',3),('e',1)]
-
 listToLeafList :: [(Char, Int)] -> [HuufManTree]
 listToLeafList [] = []
 listToLeafList ((x,y):rest) = Leaf x y : listToLeafList rest
+
+buildCodeMap :: HuufManTree -> [Char] -> Snappy-> Snappy
+buildCodeMap (Leaf c i) b s = M.insert c b s
+buildCodeMap (Fork x i y) b s = buildCodeMap x (b++"1") (buildCodeMap y (b++"0") s)
 
 getValue :: HuufManTree -> Int
 getValue (Leaf _ i) = i
 getValue (Fork _ i _) = i
 
 addToTree :: HuufManTree -> HuufManTree -> HuufManTree
-addToTree l t = Fork t (getValue l + getValue t) l
+addToTree l t = Fork l (getValue l + getValue t) t
 
 leafListToGeneralAppleTree :: [HuufManTree] -> HuufManTree
 leafListToGeneralAppleTree c = leafListToGeneralAppleTreeRecursive (tail c) (head c)
 
-leafListToGeneralAppleTreeRecursive  :: [HuufManTree] -> HuufManTree-> HuufManTree
+leafListToGeneralAppleTreeRecursive  :: [HuufManTree] -> HuufManTree -> HuufManTree
 leafListToGeneralAppleTreeRecursive rest t = P.foldl addToTree t rest
-
-
 
 countLetters :: String -> Mappy-> Mappy
 countLetters [] m = m

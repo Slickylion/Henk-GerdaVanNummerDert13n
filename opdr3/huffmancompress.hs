@@ -37,7 +37,7 @@ main = do
             writeFile arg2 textEncoded
             putStrLn ("file " ++ arg3 ++ " written to disk...")
             putStrLn "done..."
-            
+
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to compress, file to save compressed, and file to save tree"
 
     -- De file waar de tree naartoe wordt geschreven

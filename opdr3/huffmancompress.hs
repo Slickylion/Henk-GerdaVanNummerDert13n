@@ -9,20 +9,35 @@ import Data.List
 
 type Mappy = M.Map Char Int
 
+data HuufManTree = Leaf Char Int
+    | Fork HuufManTree Int HuufManTree
+    deriving (Show, Read)
+
 main :: IO ()
 main = do
     args <- getArgs
     case args of
         [arg1, arg2, arg3] -> do
             text <- readFile arg1;
-            let text2 = sortBy (flip compare `on` snd) (toList (countLetters text empty))
+            let text2 = sortBy (compare `on` snd) (toList (countLetters text empty))
+            print $ listToLeafList text2
             print text2
             putStrLn "YES WE GOT EM"
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to compress, file to save compressed, and file to save tree"
 
     -- De file waar de tree naartoe wordt geschreven
 
+-- [('c',12),('b',10),('a',8),('d',3),('e',1)]
 
+listToLeafList :: [(Char, Int)] -> [HuufManTree]
+listToLeafList [] = []
+listToLeafList ((x,y):rest) = Leaf x y : listToLeafList rest
+--addToTree :: [[a]] -> HuufManTree
+-- addToTree [] t = t
+-- addToTree (x:rest) t = putStrLn x !! 0\
+
+-- leafListToGeneralAppleTree :: [HuufManTree] -> HuufManTree
+-- leafListToGeneralAppleTree 
 
 countLetters :: String -> Mappy-> Mappy
 countLetters [] m = m

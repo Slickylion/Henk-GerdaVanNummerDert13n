@@ -5,9 +5,7 @@ import Prelude as P
 import System.Environment
 import Data.Function
 import Data.List
-import Data.Sequence (Seq(Empty))
 import Data.Maybe (fromMaybe)
-import GHC.Exts.Heap (StgInfoTable(code))
 
 type Mappy = M.Map Char Int
 type Snappy = M.Map Char [Char]
@@ -39,7 +37,7 @@ main = do
             writeFile arg2 textEncoded
             putStrLn ("file " ++ arg3 ++ " written to disk...")
             putStrLn "done..."
-            
+
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to compress, file to save compressed, and file to save tree"
 
     -- De file waar de tree naartoe wordt geschreven

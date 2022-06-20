@@ -5,9 +5,7 @@ import Prelude as P
 import System.Environment
 import Data.Function
 import Data.List
-import Data.Sequence (Seq(Empty))
 import Data.Maybe (fromMaybe)
-import GHC.Exts.Heap (StgInfoTable(code))
 
 type Mappy = M.Map Char Int
 type Snappy = M.Map Char [Char]

@@ -6,6 +6,8 @@ import System.Environment
 import Data.Function
 import Data.List
 import Data.Sequence (Seq(Empty))
+import Data.Maybe (fromMaybe)
+import GHC.Exts.Heap (StgInfoTable(code))
 
 type Mappy = M.Map Char Int
 type Snappy = M.Map Char [Char]
@@ -22,11 +24,22 @@ main = do
             text <- readFile arg1
             let text2 = sortBy (compare `on` snd) (toList (countLetters text empty))
             let tree = leafListToGeneralAppleTree $ listToLeafList text2
-            writeFile arg3 $ show tree
-            print $ buildCodeMap tree "" empty
-            print tree
 
-            putStrLn "YES WE GOT EM"
+            let codeMap = buildCodeMap tree "" empty
+            let textEncoded = encodeShiiiietByHuufman text codeMap
+            let encodedBits = length textEncoded
+            let bits = 8 * length text
+
+            putStrLn ("Length of " ++ arg1 ++": " ++ show (length text) ++ " characters, " ++ show bits ++ " bits.")
+            putStrLn ("length of compressed file " ++ arg2 ++": " ++ show encodedBits ++ " bits.")
+            putStrLn ("factor: " ++ show encodedBits ++ "/" ++ show bits ++ "*100=" ++ show(round $ fromIntegral (length textEncoded) / fromIntegral bits * 100) ++ "%")
+
+            writeFile arg3 $ show tree
+            putStrLn ("file " ++ arg2 ++ " written to disk...")
+            writeFile arg2 textEncoded
+            putStrLn ("file " ++ arg3 ++ " written to disk...")
+            putStrLn "done..."
+            
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to compress, file to save compressed, and file to save tree"
 
     -- De file waar de tree naartoe wordt geschreven
@@ -39,6 +52,10 @@ listToLeafList ((x,y):rest) = Leaf x y : listToLeafList rest
 buildCodeMap :: HuufManTree -> [Char] -> Snappy-> Snappy
 buildCodeMap (Leaf c i) b s = M.insert c b s
 buildCodeMap (Fork x i y) b s = buildCodeMap x (b++"1") (buildCodeMap y (b++"0") s)
+
+encodeShiiiietByHuufman :: [Char] -> Snappy -> [Char]
+encodeShiiiietByHuufman rest snap
+  = P.foldr (\ x -> (++) (fromMaybe [x] (M.lookup x snap))) [] rest
 
 getValue :: HuufManTree -> Int
 getValue (Leaf _ i) = i

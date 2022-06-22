@@ -1,3 +1,4 @@
+-- Gemaakt door Bennie Derksen(1014934) en Marjoony Buijing (1015470)
 module Main where
 
 import Data.Map as M
@@ -23,29 +24,12 @@ main = do
             boomtext <- readFile arg3
             let maptree = read boomtext::HuufManTree
             let snap = buildCodeMap maptree "" empty
-            print maptree
-            print snap
-            print $ convertStringToHuufman text $ getMaxStringLengthFromMap snap
-            putStrLn $ decodeShiiiietByHuufman (convertStringToHuufman text $ getMaxStringLengthFromMap snap) snap
-
-            -- let text2 = sortBy (compare `on` snd) (toList (countLetters text empty))
-            -- let tree = leafListToGeneralAppleTree $ listToLeafList text2
-
-            -- let codeMap = buildCodeMap tree "" empty
-            -- let textEncoded = encodeShiiiietByHuufman text codeMap
-            -- let encodedBits = length textEncoded
-            -- let bits = 8 * length text
-
-            -- putStrLn ("Length of " ++ arg1 ++": " ++ show (length text) ++ " characters, " ++ show bits ++ " bits.")
-            -- putStrLn ("length of compressed file " ++ arg2 ++": " ++ show encodedBits ++ " bits.")
-            -- putStrLn ("factor: " ++ show encodedBits ++ "/" ++ show bits ++ "*100=" ++ show(round $ fromIntegral (length textEncoded) / fromIntegral bits * 100) ++ "%")
-
-            -- writeFile arg3 $ show tree
-            -- putStrLn ("file " ++ arg2 ++ " written to disk...")
-            -- writeFile arg2 textEncoded
-            -- putStrLn ("file " ++ arg3 ++ " written to disk...")
-            -- putStrLn "done..."
-
+            let decodeText = decodeShiiiietByHuufman (convertStringToHuufman text $ getMaxStringLengthFromMap snap) snap
+            writeFile arg2 decodeText
+            let encodedBits = length decodeText
+            let bits = 8 * length decodeText
+            putStrLn ("length of decompressed file: " ++ show encodedBits ++ " characters, " ++ show bits ++ " bits.")
+            putStrLn ("file " ++ arg2 ++ " written to disk...\ndone...")
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to decompress, file to save decompressed, and file with tree"
 
 convertStringToHuufman :: [Char] -> Int -> [[Char]]

@@ -1,3 +1,4 @@
+-- Gemaakt door Bennie Derksen(1014934) en Marjoony Buijing (1015470)
 module Main where
 
 import Data.Map as M

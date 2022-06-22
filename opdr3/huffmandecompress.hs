@@ -6,8 +6,6 @@ import System.Environment
 import Data.Function
 import Data.List
 import Data.Maybe (fromMaybe)
-import qualified Data.Text as T
-import System.Win32 (COORD(x))
 
 type Mappy = M.Map Char Int
 type Savvy = M.Map [Char] Char
@@ -25,9 +23,11 @@ main = do
             boomtext <- readFile arg3
             let maptree = read boomtext::HuufManTree
             let snap = buildCodeMap maptree "" empty
-            print snap
             print maptree
-            print $ convertStringToHuufman text
+            print snap
+            print $ convertStringToHuufman text $ getMaxStringLengthFromMap snap
+            putStrLn $ decodeShiiiietByHuufman (convertStringToHuufman text $ getMaxStringLengthFromMap snap) snap
+
             -- let text2 = sortBy (compare `on` snd) (toList (countLetters text empty))
             -- let tree = leafListToGeneralAppleTree $ listToLeafList text2
 
@@ -48,26 +48,34 @@ main = do
 
         _ -> putStrLn "NOT ENOUGH ARGUMENTS, give file to decompress, file to save decompressed, and file with tree"
 
-convertStringToHuufman :: [Char] -> [[Char]]
-convertStringToHuufman "" = []
-convertStringToHuufman c = getUntilZero c : convertStringToHuufman (getAfterZero c)
+convertStringToHuufman :: [Char] -> Int -> [[Char]]
+convertStringToHuufman "" i = []
+convertStringToHuufman c i = getUntilZero c 1 i: convertStringToHuufman (getAfterZero c 1 i) i
 
-getAfterZero :: [Char] -> [Char]
-getAfterZero [] = []
-getAfterZero (x:rest)
+getMaxStringLengthFromMap:: Savvy -> Int
+getMaxStringLengthFromMap s = M.size s - 1
+
+decodeShiiiietByHuufman :: [[Char]] -> Savvy -> [Char]
+decodeShiiiietByHuufman rest s
+  = P.foldr (\ x -> (++) (maybeCharToString $ M.lookup x s)) [] rest
+
+
+maybeCharToString :: Maybe Char -> [Char]
+maybeCharToString c = [fromMaybe ' ' c]
+
+getAfterZero :: [Char] -> Int -> Int -> [Char]
+getAfterZero [] i m= []
+getAfterZero (x:rest) i m
     | x == '0' = rest
-    | otherwise = getAfterZero rest
+    | i == m = rest
+    | otherwise = getAfterZero rest (i+1) m
 
-getUntilZero :: [Char] -> [Char]
-getUntilZero [] = []
-getUntilZero (x:rest)
+getUntilZero :: [Char] -> Int -> Int -> [Char]
+getUntilZero [] i m= []
+getUntilZero (x:rest) i m
     | x == '0' = [x]
-    | otherwise = x : getUntilZero rest
-
--- decodeShiiiietByHuufman :: [Char] -> Savvy -> [Char]
--- decodeShiiiietByHuufman [] s = []
--- decodeShiiiietByHuufman (x:rest) s = fromMaybe [x] M.lookup x (Map k a)
-
+    | i == m = [x]
+    | otherwise = x : getUntilZero rest (i+1) m
 buildCodeMap :: HuufManTree -> [Char] -> Savvy-> Savvy
 buildCodeMap (Leaf c i) b s = M.insert b c s
 buildCodeMap (Fork x i y) b s = buildCodeMap x (b++"1") (buildCodeMap y (b++"0") s)
